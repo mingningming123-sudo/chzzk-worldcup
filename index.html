@@ -428,13 +428,21 @@ https://chzzk.naver.com/clips/PlOjsUItho
     }
   });
 
-  // is.gd 무료 단축 API (키 불필요)
+  // 단축 서비스 (tinyurl, is.gd 순차 시도)
   async function shortenWithIsGd(url) {
-    const api = "https://is.gd/create.php?format=simple&url=" + encodeURIComponent(url);
-    const res = await fetch(api);
-    if (!res.ok) return null;
-    const text = (await res.text()).trim();
-    if (/^https?:\/\//.test(text)) return text;
+    const services = [
+      "https://tinyurl.com/api-create.php?url=",
+      "https://is.gd/create.php?format=simple&url=",
+      "https://v.gd/create.php?format=simple&url="
+    ];
+    for (const api of services) {
+      try {
+        const res = await fetch(api + encodeURIComponent(url));
+        if (!res.ok) continue;
+        const text = (await res.text()).trim();
+        if (/^https?:\/\//.test(text)) return text;
+      } catch (e) { /* try next */ }
+    }
     return null;
   }
 
