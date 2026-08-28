@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>치지직 이상형 월드컵</title>
+<title>이상형 월드컵</title>
 <style>
   :root {
     --bg: #0f0f14;
@@ -16,15 +16,13 @@
     --border: #2e2e3e;
   }
   * { box-sizing: border-box; }
-  /* theme presets - applied via data-theme on body */
   body[data-theme="dark"] { --bg: #0f0f14; --panel: #1a1a24; --panel2: #22222e; --border: #2e2e3e; --text: #f0f0f5; --muted: #9a9ab0; }
   body[data-theme="light"] { --bg: #f5f5f8; --panel: #ffffff; --panel2: #ececf2; --border: #dcdce4; --text: #1a1a24; --muted: #6a6a80; }
   body[data-theme="naver"] { --bg: #0c1c2b; --panel: #122436; --panel2: #1a3148; --border: #234258; --text: #eaf2fb; --muted: #8aa6c2; }
   body[data-theme="chzzk"] { --bg: #1a0f2e; --panel: #261840; --panel2: #2f1f4d; --border: #3d2a5e; --text: #f3eaff; --muted: #b39dd6; }
   body[data-theme="sunset"] { --bg: #2a0f1f; --panel: #3d1a2d; --panel2: #4a2238; --border: #5c2f47; --text: #ffeaf3; --muted: #d6a3b8; }
   body[data-theme="forest"] { --bg: #0f1f15; --panel: #182a1f; --panel2: #1f3527; --border: #2a4533; --text: #eaf6ee; --muted: #8ab89a; }
-  body[data-theme="custom"] { /* set via JS --bg/--panel/--panel2/--border */ }
-  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif; min-height: 100vh; }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif; min-height: 100vh; transition: background .2s; }
   a { color: var(--accent); }
   button { font-family: inherit; cursor: pointer; }
 
@@ -42,7 +40,6 @@
   }
   .size-btn:hover { border-color: var(--accent); }
   .size-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
-  .size-btn:disabled { opacity: .4; cursor: not-allowed; }
   textarea {
     width: 100%; min-height: 220px; background: var(--panel2); color: var(--text);
     border: 1px solid var(--border); border-radius: 10px; padding: 12px; font-size: 14px;
@@ -71,7 +68,6 @@
   .err { color: #ff6b81; font-size: 14px; margin-top: 10px; }
   .count { color: var(--muted); font-size: 14px; }
 
-  /* share box */
   .share-box { background: var(--panel2); border: 1px solid var(--border); border-radius: 10px; padding: 12px; margin-top: 14px; }
   .share-box .share-url { width: 100%; background: var(--bg); color: var(--text); border: 1px solid var(--border); border-radius: 8px; padding: 10px; font-size: 13px; font-family: ui-monospace, Consolas, monospace; word-break: break-all; }
   .share-box .share-url:focus { outline: none; border-color: var(--accent); }
@@ -88,8 +84,8 @@
     overflow: hidden; display: flex; flex-direction: column; transition: all .2s;
   }
   .player:hover { border-color: var(--accent); transform: translateY(-2px); }
-  .player .video { position: relative; width: 100%; padding-top: 56.25%; background: #000; }
-  .player .video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .player .img-wrap { position: relative; width: 100%; aspect-ratio: 1 / 1; background: var(--panel2); overflow: hidden; }
+  .player .img-wrap img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
   .player .meta { padding: 14px 16px; }
   .player .name { font-size: 17px; font-weight: 700; margin: 0 0 10px; word-break: break-word; }
   .pick {
@@ -105,7 +101,7 @@
   .pip.done { background: var(--accent); border-color: var(--accent); }
   .pip.cur { background: var(--accent2); border-color: var(--accent2); }
 
-  /* ===== Welcome (gift) ===== */
+  /* ===== Welcome ===== */
   .welcome { text-align: center; padding: 60px 20px; }
   .welcome h1 { font-size: 36px; margin-bottom: 8px; }
   .welcome .gift-from { color: var(--muted); font-size: 16px; margin-bottom: 30px; }
@@ -117,22 +113,22 @@
   .winner-card { text-align: center; padding: 40px 20px; }
   .winner-card h2 { font-size: 36px; margin: 0 0 8px; background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
   .winner-card .crown { font-size: 48px; }
-  .winner-video { max-width: 720px; margin: 24px auto; position: relative; padding-top: 56.25%; border-radius: 14px; overflow: hidden; border: 1px solid var(--border); }
-  .winner-video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .winner-img { max-width: 560px; margin: 24px auto; border-radius: 14px; overflow: hidden; border: 1px solid var(--border); aspect-ratio: 1/1; }
+  .winner-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .hidden { display: none; }
 </style>
 </head>
 <body data-theme="dark">
 <div class="wrap">
 
-  <!-- ===== Setup Screen (주최자용) ===== -->
+  <!-- ===== Setup Screen ===== -->
   <section id="setup">
-    <h1>🏆 치지직 이상형 월드컵 만들기</h1>
-    <p class="sub">치지직 클립 링크로 월드컵을 만들고, 공유 링크를 선물하세요.</p>
+    <h1>🏆 이상형 월드컵 만들기</h1>
+    <p class="sub">이미지 링크로 월드컵을 만들고, 공유 링크를 선물하세요.</p>
 
     <div class="card">
       <label><strong>월드컵 제목</strong> (선택)</label>
-      <input type="text" id="cup-title" placeholder="예: 치지직 클립 월드컵" style="margin-top: 8px; margin-bottom: 16px;" />
+      <input type="text" id="cup-title" placeholder="예: 최애 캐릭터 월드컵" style="margin-top: 8px; margin-bottom: 16px;" />
 
       <div class="row" style="margin-bottom: 16px;">
         <label><strong>규모 선택</strong></label>
@@ -156,16 +152,17 @@
         </div>
       </div>
 
-      <label><strong>클립 링크 입력</strong> &nbsp;<span class="count" id="count"></span></label>
+      <label><strong>이미지 링크 입력</strong> &nbsp;<span class="count" id="count"></span></label>
       <textarea id="links" placeholder="한 줄에 한 명씩. 두 형식 모두 가능:
 
-이름 | https://chzzk.naver.com/clips/sezEObMeD5
-https://chzzk.naver.com/clips/PlOjsUItho
+이름 | https://example.com/image1.jpg
+https://example.com/image2.png
 
 이름을 적지 않으면 '참가자 N'으로 자동 지정됩니다."></textarea>
       <p class="hint">
-        링크는 <code>https://chzzk.naver.com/clips/아이디</code> 형식이어야 합니다.<br>
-        규모에 맞는 개수만큼 입력해 주세요. (예: 32강 → 32개)
+        이미지 직접 링크 URL을 입력하세요. (<code>https://...</code>로 끝나는 jpg, png, gif, webp 등)<br>
+        규모에 맞는 개수만큼 입력해 주세요. (예: 32강 → 32개)<br>
+        권장: imgur, GitHub, 서버 등에 올린 이미지 주소.
       </p>
       <div id="err" class="err hidden"></div>
       <div class="row" style="margin-top: 18px; justify-content: flex-end;">
@@ -181,18 +178,18 @@ https://chzzk.naver.com/clips/PlOjsUItho
           <button class="ghost" id="open-share">🔗 새 탭에서 열어보기</button>
           <span id="copied-msg" class="copied hidden">복사됨!</span>
         </div>
-        <p class="hint">이 링크를 카톡/디스코드/메일 등으로 보내면, 상대방이 클릭만 하면 바로 월드컵이 시작됩니다. 서버나 파일 전달 필요 없어요.</p>
+        <p class="hint">이 링크를 카톡/디스코드/메일 등으로 보내면, 상대방이 클릭만 하면 바로 월드컵이 시작됩니다.</p>
       </div>
     </div>
   </section>
 
-  <!-- ===== Welcome Screen (참여자용, 공유 링크로 온 사람) ===== -->
+  <!-- ===== Welcome Screen ===== -->
   <section id="welcome" class="hidden">
     <div class="welcome">
       <div style="font-size: 56px;">🏆</div>
       <h1 class="gift-title" id="welcome-title">이상형 월드컵</h1>
       <p class="gift-from" id="welcome-from"></p>
-      <p class="info" id="welcome-info">두 클립 중 더 마음에 드는 쪽을 선택하세요.<br>토너먼트로 진행되며, 최종 우승 클립을 가리게 됩니다.</p>
+      <p class="info" id="welcome-info">두 이미지 중 더 마음에 드는 쪽을 선택하세요.<br>토너먼트로 진행되며, 최종 우승을 가리게 됩니다.</p>
       <button class="primary start-big" id="welcome-start">월드컵 시작 🎬</button>
     </div>
   </section>
@@ -209,7 +206,6 @@ https://chzzk.naver.com/clips/PlOjsUItho
         <button class="ghost" id="restart">↺ 처음부터</button>
       </div>
     </div>
-
     <div class="match-arena" id="arena"></div>
     <div class="vs">VS</div>
   </section>
@@ -220,7 +216,7 @@ https://chzzk.naver.com/clips/PlOjsUItho
       <div class="crown">👑</div>
       <h2 id="winner-name">우승자</h2>
       <p class="sub">최종 우승!</p>
-      <div class="winner-video" id="winner-video"></div>
+      <div class="winner-img" id="winner-img"></div>
       <div class="row" style="justify-content: center;">
         <button class="ghost" id="again">다시 하기</button>
       </div>
@@ -243,24 +239,23 @@ https://chzzk.naver.com/clips/PlOjsUItho
   const welcomeTitleEl = $("welcome-title"), welcomeFromEl = $("welcome-from"), welcomeInfoEl = $("welcome-info"), welcomeStartBtn = $("welcome-start");
   const arenaEl = $("arena"), roundTitleEl = $("round-title"), progressEl = $("progress"), pipsEl = $("pips");
   const restartBtn = $("restart"), againBtn = $("again");
-  const winnerNameEl = $("winner-name"), winnerVideoEl = $("winner-video");
+  const winnerNameEl = $("winner-name"), winnerImgEl = $("winner-img");
 
   let bracketSize = 32;
   let currentTheme = "dark";
   let participants = [];
   let rounds = [], curRound = 0, curMatch = 0, results = [];
-  let giftData = null;  // 공유 링크에서 로드된 데이터
+  let giftData = null;
 
   const ROUND_NAMES = { 2: "결승", 4: "4강", 8: "8강", 16: "16강", 32: "32강", 64: "64강" };
 
-  // ===== 공유 링크 인코딩/디코딩 (LZ-string + 짧은 키) =====
-  // 내부 포맷: {t:title, f:from, s:size, th:theme, c:[["name","id"],...]} 또는 {c:["id",...]}
+  // ===== 인코딩/디코딩 (LZ-string + 짧은 키) =====
   function encodeGift(data) {
     const compact = {
       t: data.title || "",
       s: data.size || data.clips.length,
       th: data.theme || "dark",
-      c: data.clips.map(p => p.name && !/^참가자 \d+$/.test(p.name) ? [p.name, p.clipId] : p.clipId)
+      c: data.clips.map(p => p.name && !/^참가자 \d+$/.test(p.name) ? [p.name, p.url] : p.url)
     };
     if (data.from) compact.f = data.from;
     const json = JSON.stringify(compact);
@@ -271,16 +266,14 @@ https://chzzk.naver.com/clips/PlOjsUItho
       const json = LZString.decompressFromEncodedURIComponent(str);
       if (!json) return null;
       const c = JSON.parse(json);
-      // 복원: 짧은 키 → 원래 형태
       const clips = (c.c || []).map((item, i) => {
-        if (Array.isArray(item)) return { name: item[0], clipId: item[1] };
-        return { name: `참가자 ${i + 1}`, clipId: item };
+        if (Array.isArray(item)) return { name: item[0], url: item[1] };
+        return { name: `참가자 ${i + 1}`, url: item };
       });
       return { title: c.t || "", from: c.f || "", size: c.s, theme: c.th || "dark", clips };
     } catch (e) { return null; }
   }
 
-  // ===== 페이지 로드 시 공유 링크 확인 =====
   function loadFromHash() {
     const hash = location.hash.replace(/^#/, "");
     if (!hash) return false;
@@ -296,20 +289,17 @@ https://chzzk.naver.com/clips/PlOjsUItho
     welcomeEl.classList.remove("hidden");
     if (data.theme) applyTheme(data.theme);
     welcomeTitleEl.textContent = data.title || "이상형 월드컵";
-    if (data.from) {
-      welcomeFromEl.textContent = `from. ${data.from} 님의 선물 🎁`;
-    } else {
-      welcomeFromEl.textContent = "";
-    }
+    if (data.from) welcomeFromEl.textContent = `from. ${data.from} 님의 선물 🎁`;
+    else welcomeFromEl.textContent = "";
     const n = data.clips.length;
-    welcomeInfoEl.innerHTML = `총 ${n}개 클립 · ${ROUND_NAMES[n] || n + "강"} 토너먼트<br>두 클립 중 더 마음에 드는 쪽을 선택하세요. 최종 우승 클립을 가리게 됩니다.`;
+    welcomeInfoEl.innerHTML = `총 ${n}개 이미지 · ${ROUND_NAMES[n] || n + "강"} 토너먼트<br>두 이미지 중 더 마음에 드는 쪽을 선택하세요. 최종 우승을 가리게 됩니다.`;
   }
 
   welcomeStartBtn.addEventListener("click", () => {
     if (giftData) startTournament(giftData.clips.slice());
   });
 
-  // ===== 주최자: 링크 입력 =====
+  // ===== 주최자: 입력 =====
   sizesEl.addEventListener("click", (e) => {
     const btn = e.target.closest(".size-btn");
     if (!btn || !btn.dataset.size) return;
@@ -319,7 +309,6 @@ https://chzzk.naver.com/clips/PlOjsUItho
     updateCount();
   });
 
-  // ===== 테마 선택 =====
   const themesEl = $("themes");
   function applyTheme(theme) {
     currentTheme = theme;
@@ -333,11 +322,8 @@ https://chzzk.naver.com/clips/PlOjsUItho
     applyTheme(btn.dataset.theme);
   });
 
-  function extractClipId(line) {
-    const m = line.match(/chzzk\.naver\.com\/clips\/([A-Za-z0-9]+)/);
-    if (m) return m[1];
-    if (/^[A-Za-z0-9]{6,}$/.test(line.trim())) return line.trim();
-    return null;
+  function isValidImageUrl(s) {
+    return /^https?:\/\/.+\.(jpg|jpeg|png|gif|webp|bmp|svg)$/i.test(s) || /^https?:\/\/.+/i.test(s);
   }
 
   function parseInput() {
@@ -355,9 +341,8 @@ https://chzzk.naver.com/clips/PlOjsUItho
         name = n.trim();
         urlPart = rest.join("\t").trim();
       }
-      const clipId = extractClipId(urlPart);
-      if (!clipId) continue;
-      list.push({ name: name || `참가자 ${list.length + 1}`, clipId });
+      if (!isValidImageUrl(urlPart)) continue;
+      list.push({ name: name || `참가자 ${list.length + 1}`, url: urlPart });
     }
     return list;
   }
@@ -371,7 +356,6 @@ https://chzzk.naver.com/clips/PlOjsUItho
     countEl.style.color = list.length >= need ? "#7c5cff" : "var(--muted)";
   }
   linksEl.addEventListener("input", updateCount);
-  cupTitleEl.addEventListener("input", () => {});
 
   function shuffle(arr) {
     for (let i = arr.length - 1; i > 0; i--) {
@@ -384,103 +368,90 @@ https://chzzk.naver.com/clips/PlOjsUItho
   shuffleBtn.addEventListener("click", () => {
     const list = parseInput();
     shuffle(list);
-    linksEl.value = list.map(p => `${p.name} | https://chzzk.naver.com/clips/${p.clipId}`).join("\n");
+    linksEl.value = list.map(p => `${p.name} | ${p.url}`).join("\n");
     updateCount();
   });
 
   function showError(msg) { errEl.textContent = msg; errEl.classList.remove("hidden"); }
   function clearError() { errEl.classList.add("hidden"); }
 
-  // ===== 공유 링크 만들기 =====
   makeShareBtn.addEventListener("click", async () => {
     clearError();
     const list = parseInput();
-    if (list.length < 2) { showError("최소 2개의 클립 링크를 입력해 주세요."); return; }
+    if (list.length < 2) { showError("최소 2개의 이미지 링크를 입력해 주세요."); return; }
     if (list.length < bracketSize) {
       showError(`규모(${bracketSize}강)에 맞는 링크가 부족합니다. 현재 ${list.length}개. 더 입력하거나 규모를 줄여 보세요.`);
       return;
     }
     const picked = shuffle(list.slice()).slice(0, bracketSize);
-    const title = cupTitleEl.value.trim() || "치지직 클립 이상형 월드컵";
+    const title = cupTitleEl.value.trim() || "이상형 월드컵";
     const data = { title, from: "", size: bracketSize, theme: currentTheme, clips: picked };
     const encoded = encodeGift(data);
     const base = location.href.split("#")[0];
     const longUrl = base + "#" + encoded;
 
-    // 먼저 긴 URL 표시 (단축 실패 대비)
     shareUrlEl.value = longUrl;
     shareResultEl.classList.remove("hidden");
     shareResultEl.scrollIntoView({ behavior: "smooth", block: "nearest" });
 
-    // is.gd 단축 시도
     try {
       makeShareBtn.disabled = true;
       makeShareBtn.textContent = "단축 중...";
-      const shortUrl = await shortenWithIsGd(longUrl);
-      if (shortUrl) {
-        shareUrlEl.value = shortUrl;
-      }
-    } catch (e) {
-      // 단축 실패 시 긴 URL 유지
-    } finally {
+      const shortUrl = await shortenUrl(longUrl);
+      if (shortUrl) shareUrlEl.value = shortUrl;
+    } catch (e) {} finally {
       makeShareBtn.disabled = false;
       makeShareBtn.textContent = "공유 링크 만들기";
     }
   });
 
-  // 단축 서비스 (tinyurl, is.gd 순차 시도)
-  async function shortenWithIsGd(url) {
-    const services = [
-      "https://tinyurl.com/api-create.php?url=",
-      "https://is.gd/create.php?format=simple&url=",
-      "https://v.gd/create.php?format=simple&url="
-    ];
-    for (const api of services) {
-      try {
-        const res = await fetch(api + encodeURIComponent(url));
-        if (!res.ok) continue;
+  async function shortenUrl(url) {
+    try {
+      const res = await fetch("https://shrtr.top/api/v1/shorten", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data && data.short_url) return data.short_url;
+      }
+    } catch (e) {}
+    try {
+      const res = await fetch("https://tinyurl.com/api-create.php?url=" + encodeURIComponent(url));
+      if (res.ok) {
         const text = (await res.text()).trim();
         if (/^https?:\/\//.test(text)) return text;
-      } catch (e) { /* try next */ }
-    }
+      }
+    } catch (e) {}
+    try {
+      const res = await fetch("https://is.gd/create.php?format=simple&url=" + encodeURIComponent(url));
+      if (res.ok) {
+        const text = (await res.text()).trim();
+        if (/^https?:\/\//.test(text)) return text;
+      }
+    } catch (e) {}
     return null;
   }
 
   copyShareBtn.addEventListener("click", async () => {
-    try {
-      await navigator.clipboard.writeText(shareUrlEl.value);
-    } catch (e) {
-      shareUrlEl.select();
-      document.execCommand("copy");
-    }
+    try { await navigator.clipboard.writeText(shareUrlEl.value); }
+    catch (e) { shareUrlEl.select(); document.execCommand("copy"); }
     copiedMsgEl.classList.remove("hidden");
     setTimeout(() => copiedMsgEl.classList.add("hidden"), 1800);
   });
 
-  openShareBtn.addEventListener("click", () => {
-    window.open(shareUrlEl.value, "_blank");
-  });
+  openShareBtn.addEventListener("click", () => window.open(shareUrlEl.value, "_blank"));
 
   // ===== 토너먼트 =====
   function startTournament(seeded) {
     participants = seeded;
     const firstRound = [];
-    for (let i = 0; i < seeded.length; i += 2) {
-      firstRound.push([seeded[i], seeded[i + 1]]);
-    }
-    rounds = [firstRound];
-    results = [];
-    curRound = 0;
-    curMatch = 0;
-    setupEl.classList.add("hidden");
-    welcomeEl.classList.add("hidden");
-    winEl.classList.add("hidden");
+    for (let i = 0; i < seeded.length; i += 2) firstRound.push([seeded[i], seeded[i + 1]]);
+    rounds = [firstRound]; results = []; curRound = 0; curMatch = 0;
+    setupEl.classList.add("hidden"); welcomeEl.classList.add("hidden"); winEl.classList.add("hidden");
     tourEl.classList.remove("hidden");
     renderMatch();
-  }
-
-  function embedUrl(clipId) {
-    return `https://chzzk.naver.com/embed/clip/${clipId}`;
   }
 
   function renderMatch() {
@@ -488,13 +459,11 @@ https://chzzk.naver.com/clips/PlOjsUItho
     if (curMatch >= round.length) { advanceRound(); return; }
     const match = round[curMatch];
     if (match.length === 1) { recordWinner(match[0]); return; }
-
     const [a, b] = match;
     const participantsInRound = round.reduce((sum, m) => sum + m.length, 0);
     roundTitleEl.textContent = ROUND_NAMES[participantsInRound] || `${participantsInRound}강`;
     progressEl.textContent = `${curMatch + 1} / ${round.length} 매치`;
     renderPips();
-
     arenaEl.innerHTML = "";
     arenaEl.appendChild(playerCard(a));
     arenaEl.appendChild(playerCard(b));
@@ -504,7 +473,7 @@ https://chzzk.naver.com/clips/PlOjsUItho
     const card = document.createElement("div");
     card.className = "player";
     card.innerHTML = `
-      <div class="video"><iframe src="${embedUrl(p.clipId)}" allow="autoplay; fullscreen; encrypted-media" allowfullscreen scrolling="no"></iframe></div>
+      <div class="img-wrap"><img src="${escapeAttr(p.url)}" alt="${escapeAttr(p.name)}" loading="lazy" onerror="this.style.opacity=0.2" /></div>
       <div class="meta">
         <p class="name">${escapeHtml(p.name)}</p>
         <button class="pick">이쪽 선택 👈</button>
@@ -528,9 +497,7 @@ https://chzzk.naver.com/clips/PlOjsUItho
       if (winners[i + 1]) next.push([winners[i], winners[i + 1]]);
       else next.push([winners[i]]);
     }
-    rounds.push(next);
-    curRound++;
-    curMatch = 0;
+    rounds.push(next); curRound++; curMatch = 0;
     renderMatch();
   }
 
@@ -548,24 +515,18 @@ https://chzzk.naver.com/clips/PlOjsUItho
     tourEl.classList.add("hidden");
     winEl.classList.remove("hidden");
     winnerNameEl.textContent = p.name;
-    winnerVideoEl.innerHTML = `<iframe src="${embedUrl(p.clipId)}" allow="autoplay; fullscreen; encrypted-media" allowfullscreen scrolling="no"></iframe>`;
+    winnerImgEl.innerHTML = `<img src="${escapeAttr(p.url)}" alt="${escapeAttr(p.name)}" />`;
   }
 
   function escapeHtml(s) {
     return s.replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   }
+  function escapeAttr(s) { return escapeHtml(s); }
 
-  restartBtn.addEventListener("click", () => {
-    if (participants.length) startTournament(participants.slice());
-  });
-  againBtn.addEventListener("click", () => {
-    if (participants.length) startTournament(shuffle(participants.slice()));
-  });
+  restartBtn.addEventListener("click", () => { if (participants.length) startTournament(participants.slice()); });
+  againBtn.addEventListener("click", () => { if (participants.length) startTournament(shuffle(participants.slice())); });
 
-  // ===== 초기화 =====
-  if (!loadFromHash()) {
-    updateCount();
-  }
+  if (!loadFromHash()) updateCount();
 })();
 </script>
 </body>
