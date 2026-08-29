@@ -378,7 +378,7 @@ https://chzzk.naver.com/clips/PlOjsUItho
   function showError(msg) { errEl.textContent = msg; errEl.classList.remove("hidden"); }
   function clearError() { errEl.classList.add("hidden"); }
 
-  makeShareBtn.addEventListener("click", async () => {
+  makeShareBtn.addEventListener("click", () => {
     clearError();
     const list = parseInput();
     if (list.length < 2) { showError("최소 2개의 클립 링크를 입력해 주세요."); return; }
@@ -391,51 +391,11 @@ https://chzzk.naver.com/clips/PlOjsUItho
     const data = { title, from: "", size: bracketSize, theme: currentTheme, clips: picked };
     const encoded = encodeGift(data);
     const base = location.href.split("#")[0];
-    const longUrl = base + "#" + encoded;
-
-    shareUrlEl.value = longUrl;
+    const shareUrl = base + "#" + encoded;
+    shareUrlEl.value = shareUrl;
     shareResultEl.classList.remove("hidden");
     shareResultEl.scrollIntoView({ behavior: "smooth", block: "nearest" });
-
-    try {
-      makeShareBtn.disabled = true;
-      makeShareBtn.textContent = "단축 중...";
-      const shortUrl = await shortenUrl(longUrl);
-      if (shortUrl) shareUrlEl.value = shortUrl;
-    } catch (e) {} finally {
-      makeShareBtn.disabled = false;
-      makeShareBtn.textContent = "공유 링크 만들기";
-    }
   });
-
-  async function shortenUrl(url) {
-    try {
-      const res = await fetch("https://shrtr.top/api/v1/shorten", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ url })
-      });
-      if (res.ok) {
-        const data = await res.json();
-        if (data && data.short_url) return data.short_url;
-      }
-    } catch (e) {}
-    try {
-      const res = await fetch("https://tinyurl.com/api-create.php?url=" + encodeURIComponent(url));
-      if (res.ok) {
-        const text = (await res.text()).trim();
-        if (/^https?:\/\//.test(text)) return text;
-      }
-    } catch (e) {}
-    try {
-      const res = await fetch("https://is.gd/create.php?format=simple&url=" + encodeURIComponent(url));
-      if (res.ok) {
-        const text = (await res.text()).trim();
-        if (/^https?:\/\//.test(text)) return text;
-      }
-    } catch (e) {}
-    return null;
-  }
 
   copyShareBtn.addEventListener("click", async () => {
     try { await navigator.clipboard.writeText(shareUrlEl.value); }
